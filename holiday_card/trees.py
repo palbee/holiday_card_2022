@@ -1,15 +1,39 @@
+"""String art tree generator."""
 import numpy as np
 
+from .utilities import transform_strokes
 
-def string_art(width=1, height=1, n_steps=20, base_x=0., base_y=0., rotation=0):
-    dx = np.array([np.cos(rotation), np.sin(rotation)]) * width
-    dy = np.array([-np.sin(rotation), np.cos(rotation)]) * height
+
+def string_art(width: float = 1, height: float = 1,
+               n_steps: float = 20,
+               base_x: float = 0., base_y: float = 0.,
+               rotation=0) -> tuple[list[list[float]], list[list[float]]]:
+    # pylint: disable=too-many-arguments
+    """
+    Construct a string art tree.
+
+    The height of the tree is measured from the top of the trunk, with the
+    trunk extending 0.1 * height below the tree.
+
+    The output is a two-element tuple with the first element containing a
+    list of lists of the x positions for the drawing segments. The second
+    element is the positions.
+
+    :param width: The width of the tree in millimeters
+    :param height: The height of the tree in millimeters above the trunk.
+    :param n_steps: The number of lines making up the tree.
+    :param base_x: The x location of the tree's origin.
+    :param base_y: The y location of the tree's origin.
+    :param rotation: The rotation of the tree in radians.
+    :return: The line segments representing the tree.
+
+    """
     segments_x = []
     segments_y = []
     thetas = list(np.linspace(0, np.pi / 2, num=n_steps, endpoint=True))
 
     # Construct the base tree lines
-    # The Tree
+    # The drawing alternates direction. This reduces motion in the final drawing.
     even = True
     for theta in thetas:
         if even:
@@ -26,16 +50,7 @@ def string_art(width=1, height=1, n_steps=20, base_x=0., base_y=0., rotation=0):
     segments_x.append([trunk_width, trunk_width, -trunk_width])
     segments_y.append([trunk_depth, 0, 0])
 
-    # Scale
-    segments_x = np.array(segments_x, dtype=float) * (width / 2.0)
-    segments_y = np.array(segments_y, dtype=float) * height
-
-    # Rotate
-    rotated_x = segments_x * np.cos(rotation) - segments_y * np.sin(rotation)
-    rotated_y = segments_x * np.sin(rotation) + segments_y * np.cos(rotation)
-
-    # Translate
-    segments_x = rotated_x + base_x
-    segments_y = rotated_y + base_y
-
-    return segments_x, segments_y
+    return transform_strokes(segments_x, segments_y,
+                             width=width / 2.0, height=height,
+                             base_x=base_x, base_y=base_y,
+                             rotation=rotation)
