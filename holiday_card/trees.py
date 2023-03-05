@@ -5,7 +5,7 @@ from .utilities import transform_strokes
 
 
 def string_art(width: float = 1, height: float = 1,
-               n_steps: float = 20,
+               n_steps: int = 20,
                base_x: float = 0., base_y: float = 0.,
                rotation=0) -> tuple[list[list[float]], list[list[float]]]:
     # pylint: disable=too-many-arguments
@@ -34,13 +34,13 @@ def string_art(width: float = 1, height: float = 1,
 
     # Construct the base tree lines
     # The drawing alternates direction. This reduces motion in the final drawing.
-    even = True
+    right_to_left = True
     for theta in thetas:
-        if even:
+        if right_to_left:
             segments_x.append([np.cos(theta), 0, -np.cos(theta)])
         else:
             segments_x.append([-np.cos(theta), 0, np.cos(theta)])
-        even = not even
+        right_to_left = not right_to_left
         segments_y.append([0, np.sin(theta), 0])
     # The Trunk
     trunk_depth = -0.1
