@@ -12,14 +12,15 @@
         (mit-eddie!ci-dandelion!hurt)
 
 """
+
 import numpy as np
 
 from holiday_card.utilities import transform_strokes, vert_squiggle
 
 
-def construct_message(message: str,
-                      character_definitions: list[dict[str, list[float] | float]],
-                      center: bool = False) -> tuple[list[list[float]], list[list[float]]]:
+def construct_message(message,
+                      character_definitions,
+                      center=False):
     """Given a message string and character definitions, create a collection of optionally centered
     strokes.
 
@@ -151,7 +152,10 @@ This is accomplished by changing the second (y) element of each vertex to be com
     return characters
 
 
-def transform_message(x_strokes, y_strokes, height=1, base_x=0, base_y=0, rotation=0):
+def transform_message(x_strokes, y_strokes,
+                      height=1,
+                      base_x=0, base_y=0,
+                      rotation=0):
     # pylint: disable=too-many-arguments
     """
     Transform the message. The message width will scale uniformly with the message height.
@@ -168,7 +172,8 @@ def transform_message(x_strokes, y_strokes, height=1, base_x=0, base_y=0, rotati
                              base_y=base_y, rotation=rotation)
 
 
-def cross_out_bbox(x_bbox, y_bbox, cycles=1):
+def cross_out_bbox(x_bbox, y_bbox,
+                   cycles=1):
     """
     Given a bounding box, draw a squiggle covering the bounding box.
     :param x_bbox: The x positions for the bounding box
@@ -186,7 +191,9 @@ def cross_out_bbox(x_bbox, y_bbox, cycles=1):
     return x_squiggle, y_squiggle
 
 
-def construct_letter_bboxes(message, character_definitions, center=False):
+def construct_letter_bboxes(message,
+                            character_definitions,
+                            center=False):
     """construct the bounding boxes for the letters in a message.
     :param message: The message being rendered
     :param character_definitions: The font definition
